@@ -49,7 +49,7 @@ const understandingTheSchema = async (schema: Record<string, string>) => {
   const keys = Object.keys(schema);
 
   const ai = new GoogleGenerativeAI(
-        process.env.GEMINI_API_KEY!
+        process.env.GOOGLE_GENERATIVE_AI_API_KEY!
 );
 
 const prompt = `
@@ -84,12 +84,12 @@ Please return only valid JSON.
 
     const response = await result.response;
     const text = response.text();
-    const cleanText = text.replace(/```json|```/g, "").trim();
+    // const cleanText = text.replace(/```json|```/g, "").trim();
 
     console.log("Schema Understanding Result:", text);
-    const jsonresult = JSON.parse(cleanText);
-    console.log("jsonObj => "+jsonresult)
-    return jsonresult;
+    // const jsonresult = JSON.parse(cleanText);
+    // console.log("jsonObj => "+jsonresult)
+    return text;
   } catch (error) {
     console.error("Failed to understand the schema:", error);
     throw new Error("Something went wrong while understanding the schema: " + error);

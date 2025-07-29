@@ -9,10 +9,24 @@ import { useState } from "react";
 export default function Home() {
   const [file,setFile] = useState<File |null>(null);
   const {setJsonData,setLLMData} = useData();
-  const handleFileChange = (e:React.ChangeEvent<HTMLInputElement>)=>{
+  const handleFileChange = async(e:React.ChangeEvent<HTMLInputElement>)=>{
     const selectedFile = e.target.files?.[0];
     if(selectedFile){
       setFile(selectedFile);
+      const formdata = new FormData();
+      formdata.append("file",selectedFile);
+
+      const response = await axios.post("/api/extract",formdata,{
+        headers:{
+          'Content-Type':'mutipart/form-data'
+        }
+      });
+
+      if(response.status===200){
+        console.log("Everything went fruitfull");
+      }else{
+        console.log("Debug it!!..Something went wrong!")
+      }
     }
   }
   const router = useRouter();
@@ -52,6 +66,7 @@ export default function Home() {
       console.log('Failed to upload the file '+error)
     }
   }
+
   return (
     <>
    <Navbar/>
@@ -68,7 +83,7 @@ export default function Home() {
           <label htmlFor="input" className="font-light text-sm p-1">Upload an Excel file</label>
           <input
           onChange={handleFileChange}
-          className="border flex w-[75vw] p-2 justify-center items-center rounded-md hover:bg-zinc-900 cursor-pointer"  type="file" placeholder="Enter the excel file..."/>
+          className="border flex w-[75vw] p-2 justify-center items-center rounded-md hover:scale-95 cursor-pointer"  type="file" placeholder="Enter the excel file..."/>
         </div>
         <div className="flex flex-col justify-center items-center p-2 gap-4">
           <button
@@ -77,7 +92,8 @@ export default function Home() {
           <div className="">
             Or
           </div>
-          <Link href={"#"} className="flex justify-center items-center tracking-tight p-2 hover:text-blue-800 hover:underline">Any anything about your data to AI</Link>
+              <Link href={"/DexoraAI"} className="flex justify-center items-center tracking-tight p-2 hover:text-blue-800 hover:underline">Any anything about your data to AI</Link>
+          
         </div>
       </section>
       <div className="w-full p-2 ">
